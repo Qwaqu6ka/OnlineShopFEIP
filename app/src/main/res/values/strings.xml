@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Online Shop FEIP</string>
+    <string name="image_of_product">Изображение продукта</string>
+    <string name="add_to_favorite_button">Добавить в избранное</string>
+    <string name="go_back_button">Перейти назад</string>
+    <string name="new_product_patch">Новый продукт</string>
 </resources>

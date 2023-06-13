@@ -1,4 +1,4 @@
-package com.example.onlineshopfeip
+package com.example.onlineshopfeip.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.onlineshopfeip.ui.screens.productprewiew.ProductPreviewScreen
 import com.example.onlineshopfeip.ui.theme.OnlineShopFEIPTheme
 
 class MainActivity : ComponentActivity() {
@@ -17,12 +18,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             OnlineShopFEIPTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    ProductPreviewScreen(0,this@MainActivity)
                 }
             }
         }
