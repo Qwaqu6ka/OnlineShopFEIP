@@ -1,29 +1,32 @@
 package com.example.onlineshopfeip.ui.screens.productprewiew
 
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.createSavedStateHandle
-import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
+import com.example.onlineshopfeip.models.BaseViewModel
 import com.example.onlineshopfeip.models.LiveResult
 import com.example.onlineshopfeip.models.MutableLiveResult
 import com.example.onlineshopfeip.models.PendingResult
+import com.example.onlineshopfeip.models.Product
 import com.example.onlineshopfeip.models.SuccessResult
+import com.example.onlineshopfeip.models.repository.ShopRepository
 import kotlinx.coroutines.launch
 
 class ProductPreviewViewModel(
-    val productId: Long,
-//    val repository: Repository,
-    val savedStateHandle: SavedStateHandle
-) : ViewModel() {
+    private val productId: Long,
+    private val repository: ShopRepository
+) : BaseViewModel() {
+
+    private val _product: MutableLiveResult<Product> = MutableLiveResult(PendingResult())
+    val product: LiveResult<Product> = _product
 
     private val _listOfImages: MutableLiveResult<List<String>> = MutableLiveResult(PendingResult())
     val listOfImages: LiveResult<List<String>> = _listOfImages
 
     init {
-        getImages()
+        loadProduct()
+    }
+
+    fun onTryAgain() {
+        _product.value = PendingResult()
+        loadProduct()
     }
 
     private fun getImages() = viewModelScope.launch {
@@ -39,25 +42,7 @@ class ProductPreviewViewModel(
         ))
     }
 
-    companion object {
-
-        fun getFactory(productId: Long): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(
-                modelClass: Class<T>,
-                extras: CreationExtras
-            ): T {
-                // Get the Application object from extras
-                val application = checkNotNull(extras[APPLICATION_KEY])
-                // Create a SavedStateHandle for this ViewModel from extras
-                val savedStateHandle = extras.createSavedStateHandle()
-
-                return ProductPreviewViewModel(
-                    productId,
-//                    (application as App).myRepository,
-                    savedStateHandle
-                ) as T
-            }
-        }
+    private fun loadProduct() {
+        into(_product) { repository.getProductById(productId) }
     }
 }

@@ -1,9 +1,9 @@
 package com.example.onlineshopfeip.ui.screens.productprewiew
 
-import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -29,45 +29,69 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.onlineshopfeip.R
+import com.example.onlineshopfeip.models.PendingResult
+import com.example.onlineshopfeip.ui.components.RenderSimpleResult
 import com.example.onlineshopfeip.ui.components.SlidingCarousel
+import com.example.onlineshopfeip.ui.components.TagList
 import com.example.onlineshopfeip.ui.theme.ColorFavorite
 
 @Composable
 fun ProductPreviewScreen(
-    productId: Long,
-    context: Context,
-    screenViewModel: ProductPreviewViewModel = viewModel(
-        factory = ProductPreviewViewModel.getFactory(productId)
-    )
+    viewModel: ProductPreviewViewModel
 ) {
-    val scrollState = rememberScrollState()
-    Column(modifier = Modifier.verticalScroll(scrollState)) {
-        ImagePart(true, screenViewModel, context)
-        Text("sdlkfjsldkfjlsk")
+    val productResultState by viewModel.product.observeAsState(PendingResult())
+
+    RenderSimpleResult(result = productResultState, onTryAgain = viewModel::onTryAgain) { product ->
+        val scrollState = rememberScrollState()
+        Column(modifier = Modifier.verticalScroll(scrollState)) {
+            ImagePart(product.isProductNew, emptyList())
+            Spacer(modifier = Modifier.height(30.dp))
+            TagList(
+                tags = listOf(
+                    "fdjsalkfsd",
+                    "kdfjsldfkj",
+                    "jfdslkfjs",
+                    "fjsdlkfjdsjfslkf",
+                    "fjslkdfjskdflksd",
+                    "slkdjflskdjflksjdf"
+                )
+            )
+            Text(
+                text = product.title,
+                Modifier.padding(16.dp),
+                style = MaterialTheme.typography.titleLarge
+            )
+        }
     }
 }
 
 @Composable
-fun ImagePart(isProductNew: Boolean, screenViewModel: ProductPreviewViewModel, context: Context) {  // todo убрать viewModel и context
+fun ImagePart(
+    isProductNew: Boolean,
+    imagesUrlList: List<String>?
+) {
     Box(modifier = Modifier.fillMaxWidth()) {
+        val context = LocalContext.current
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(500.dp)
         ) {
-            val images = screenViewModel.listOfImages.observeAsState()
-            val list = images.value?.takeSuccess()
-            if (!list.isNullOrEmpty()) {
-                SlidingCarousel(itemsCount = list.size, modifier = Modifier.fillMaxSize()) {
+            if (!imagesUrlList.isNullOrEmpty()) {
+                SlidingCarousel(
+                    itemsCount = imagesUrlList.size,
+                    modifier = Modifier.fillMaxSize()
+                ) {
                     Image(
                         // todo: Glide
                         bitmap = ImageBitmap.imageResource(id = R.drawable.product_placeholder),
                         contentDescription = context.getString(R.string.image_of_product),
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize()
                     )
                 }
@@ -75,7 +99,8 @@ fun ImagePart(isProductNew: Boolean, screenViewModel: ProductPreviewViewModel, c
                 Image(
                     bitmap = ImageBitmap.imageResource(id = R.drawable.product_placeholder),
                     contentDescription = context.getString(R.string.image_of_product),
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
                 )
             }
         }

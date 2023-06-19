@@ -4,4 +4,6 @@
     <string name="add_to_favorite_button">Добавить в избранное</string>
     <string name="go_back_button">Перейти назад</string>
     <string name="new_product_patch">Новый продукт</string>
+    <string name="loading_error_message">Произошла ошибка при загрузке данных</string>
+    <string name="try_again">Попробовать снова</string>
 </resources>
